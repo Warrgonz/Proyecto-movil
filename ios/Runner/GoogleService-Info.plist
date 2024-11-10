@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyCo67tWxBGo9u1zIu6nXkW88k5YmCHEKXc</string>
+	<key>GCM_SENDER_ID</key>
+	<string>142797800769</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.fidelitas.parroquiainmaculada</string>
+	<key>PROJECT_ID</key>
+	<string>parroquiainmaculada-671ed</string>
+	<key>STORAGE_BUCKET</key>
+	<string>parroquiainmaculada-671ed.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:142797800769:ios:3cc31674c2cc9b2f0dcdc0</string>
+</dict>
+</plist>

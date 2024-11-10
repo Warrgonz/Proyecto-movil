@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "142797800769",
+    "project_id": "parroquiainmaculada-671ed",
+    "storage_bucket": "parroquiainmaculada-671ed.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:142797800769:android:0bde3d0e00ae017e0dcdc0",
+        "android_client_info": {
+          "package_name": "com.fidelitas.parroquiainmaculada"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKis_mFTAKp8Q0bj40806Erwcyp3oVkZg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
