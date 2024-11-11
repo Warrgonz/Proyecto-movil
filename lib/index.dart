@@ -1,3 +1,3 @@
 // Export pages
-export '/home/home_widget.dart' show HomeWidget;
-export '/login/login_widget.dart' show LoginWidget;
+export '/auth/login/login_widget.dart' show LoginWidget;
+export '/app/app_widget.dart' show AppWidget;

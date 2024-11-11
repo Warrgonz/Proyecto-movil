@@ -1,8 +1,8 @@
 import '/flutter_flow/flutter_flow_util.dart';
-import 'home_widget.dart' show HomeWidget;
+import 'menu_widget.dart' show MenuWidget;
 import 'package:flutter/material.dart';
 
-class HomeModel extends FlutterFlowModel<HomeWidget> {
+class MenuModel extends FlutterFlowModel<MenuWidget> {
   @override
   void initState(BuildContext context) {}
 
