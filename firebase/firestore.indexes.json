@@ -1,3 +1,32 @@
 {
-  "indexes": []
+  "indexes": [
+    {
+      "collectionGroup": "Chat",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "Usuario",
+          "arrayConfig": "CONTAINS"
+        },
+        {
+          "fieldPath": "Envio_Ultimo_Mensaje",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "mensajes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "chat",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "Hora_de_Envio",
+          "order": "DESCENDING"
+        }
+      ]
+    }
+  ]
 }

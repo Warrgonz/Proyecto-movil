@@ -285,13 +285,22 @@ class _MenuWidgetState extends State<MenuWidget> {
                           color: FlutterFlowTheme.of(context).accent1,
                           size: 24.0,
                         ),
-                        Text(
-                          'Contacto',
-                          style:
-                              FlutterFlowTheme.of(context).bodyLarge.override(
-                                    fontFamily: 'Inter',
-                                    letterSpacing: 0.0,
-                                  ),
+                        InkWell(
+                          splashColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () async {
+                            context.pushNamed('Chat_Main');
+                          },
+                          child: Text(
+                            'Contacto',
+                            style:
+                                FlutterFlowTheme.of(context).bodyLarge.override(
+                                      fontFamily: 'Inter',
+                                      letterSpacing: 0.0,
+                                    ),
+                          ),
                         ),
                       ].divide(const SizedBox(width: 16.0)),
                     ),

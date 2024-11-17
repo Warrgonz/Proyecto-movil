@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '/backend/backend.dart';
 
 import '/auth/base_auth_user_provider.dart';
 
@@ -89,8 +90,63 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: 'App',
           path: '/app',
           builder: (context, params) => const AppWidget(),
+        ),
+        FFRoute(
+          name: 'Chat_Detalles',
+          path: '/chatDetalles',
+          asyncParams: {
+            'chatref': getDoc(['Chat'], ChatRecord.fromSnapshot),
+          },
+          builder: (context, params) => ChatDetallesWidget(
+            chatref: params.getParam(
+              'chatref',
+              ParamType.Document,
+            ),
+          ),
+        ),
+        FFRoute(
+          name: 'Listadecursousuario',
+          path: '/listadecursousuario',
+          builder: (context, params) => const ListadecursousuarioWidget(),
+        ),
+        FFRoute(
+          name: 'Listacursosadmingrud',
+          path: '/listacursosadmingrud',
+          builder: (context, params) => const ListacursosadmingrudWidget(),
+        ),
+        FFRoute(
+          name: 'Chat_Main',
+          path: '/chatMain',
+          builder: (context, params) => const ChatMainWidget(),
+        ),
+        FFRoute(
+          name: 'DetallesImagen',
+          path: '/detallesImagen',
+          asyncParams: {
+            'mensajeChat': getDoc(['mensajes'], MensajesRecord.fromSnapshot),
+          },
+          builder: (context, params) => DetallesImagenWidget(
+            mensajeChat: params.getParam(
+              'mensajeChat',
+              ParamType.Document,
+            ),
+          ),
+        ),
+        FFRoute(
+          name: 'BandejaEntrada',
+          path: '/bandejaEntrada',
+          asyncParams: {
+            'chatRef': getDoc(['Chat'], ChatRecord.fromSnapshot),
+          },
+          builder: (context, params) => BandejaEntradaWidget(
+            chatRef: params.getParam(
+              'chatRef',
+              ParamType.Document,
+            ),
+          ),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
+      observers: [routeObserver],
     );
 
 extension NavParamExtensions on Map<String, String?> {
