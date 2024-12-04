@@ -32,10 +32,17 @@ class ComponenteChatModel extends FlutterFlowModel<ComponenteChatWidget> {
   List<MensajesRecord>? listViewPreviousSnapshot;
   // Models for HiloChat dynamic component.
   late FlutterFlowDynamicModels<HiloChatModel> hiloChatModels;
+  bool isDataUploading = false;
+  FFUploadedFile uploadedLocalFile =
+      FFUploadedFile(bytes: Uint8List.fromList([]));
+  String uploadedFileUrl = '';
+
   // State field(s) for TextField widget.
   FocusNode? textFieldFocusNode;
   TextEditingController? textController;
   String? Function(BuildContext, String?)? textControllerValidator;
+  // Stores action output result for [Backend Call - Create Document] action in TextField widget.
+  MensajesRecord? nuevChat;
 
   @override
   void initState(BuildContext context) {

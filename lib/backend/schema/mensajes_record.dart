@@ -40,12 +40,18 @@ class MensajesRecord extends FirestoreRecord {
   DocumentReference? get chat => _chat;
   bool hasChat() => _chat != null;
 
+  // "video" field.
+  String? _video;
+  String get video => _video ?? '';
+  bool hasVideo() => _video != null;
+
   void _initializeFields() {
     _texto = snapshotData['Texto'] as String?;
     _imagenes = snapshotData['Imagenes'] as String?;
     _horaDeEnvio = snapshotData['Hora_de_Envio'] as DateTime?;
     _usuario = snapshotData['usuario'] as DocumentReference?;
     _chat = snapshotData['chat'] as DocumentReference?;
+    _video = snapshotData['video'] as String?;
   }
 
   static CollectionReference get collection =>
@@ -88,6 +94,7 @@ Map<String, dynamic> createMensajesRecordData({
   DateTime? horaDeEnvio,
   DocumentReference? usuario,
   DocumentReference? chat,
+  String? video,
 }) {
   final firestoreData = mapToFirestore(
     <String, dynamic>{
@@ -96,6 +103,7 @@ Map<String, dynamic> createMensajesRecordData({
       'Hora_de_Envio': horaDeEnvio,
       'usuario': usuario,
       'chat': chat,
+      'video': video,
     }.withoutNulls,
   );
 
@@ -111,12 +119,13 @@ class MensajesRecordDocumentEquality implements Equality<MensajesRecord> {
         e1?.imagenes == e2?.imagenes &&
         e1?.horaDeEnvio == e2?.horaDeEnvio &&
         e1?.usuario == e2?.usuario &&
-        e1?.chat == e2?.chat;
+        e1?.chat == e2?.chat &&
+        e1?.video == e2?.video;
   }
 
   @override
-  int hash(MensajesRecord? e) => const ListEquality()
-      .hash([e?.texto, e?.imagenes, e?.horaDeEnvio, e?.usuario, e?.chat]);
+  int hash(MensajesRecord? e) => const ListEquality().hash(
+      [e?.texto, e?.imagenes, e?.horaDeEnvio, e?.usuario, e?.chat, e?.video]);
 
   @override
   bool isValidKey(Object? o) => o is MensajesRecord;

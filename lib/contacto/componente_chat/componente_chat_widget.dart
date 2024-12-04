@@ -1,9 +1,13 @@
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
+import '/backend/firebase_storage/storage.dart';
 import '/contacto/hilo_chat/hilo_chat_widget.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
+import '/flutter_flow/flutter_flow_media_display.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
+import '/flutter_flow/flutter_flow_video_player.dart';
+import '/flutter_flow/upload_data.dart';
 import 'package:flutter/material.dart';
 import 'componente_chat_model.dart';
 export 'componente_chat_model.dart';
@@ -163,6 +167,77 @@ class _ComponenteChatWidgetState extends State<ComponenteChatWidget> {
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
+                if (_model.uploadedFileUrl != '')
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsetsDirectional.fromSTEB(
+                              0.0, 12.0, 0.0, 0.0),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                FlutterFlowMediaDisplay(
+                                  path: _model.uploadedFileUrl,
+                                  imageBuilder: (path) => ClipRRect(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    child: Image.network(
+                                      path,
+                                      width: 120.0,
+                                      height: 100.0,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  videoPlayerBuilder: (path) =>
+                                      FlutterFlowVideoPlayer(
+                                    path: path,
+                                    width: 300.0,
+                                    autoPlay: false,
+                                    looping: true,
+                                    showControls: true,
+                                    allowFullScreen: true,
+                                    allowPlaybackSpeedMenu: false,
+                                  ),
+                                ),
+                                Align(
+                                  alignment: const AlignmentDirectional(-1.0, -1.0),
+                                  child: FlutterFlowIconButton(
+                                    borderColor:
+                                        FlutterFlowTheme.of(context).error,
+                                    borderRadius: 20.0,
+                                    borderWidth: 2.0,
+                                    buttonSize: 40.0,
+                                    fillColor: FlutterFlowTheme.of(context)
+                                        .primaryBackground,
+                                    icon: Icon(
+                                      Icons.delete_forever,
+                                      color: FlutterFlowTheme.of(context).error,
+                                      size: 24.0,
+                                    ),
+                                    onPressed: () async {
+                                      safeSetState(() {
+                                        _model.isDataUploading = false;
+                                        _model.uploadedLocalFile =
+                                            FFUploadedFile(
+                                                bytes: Uint8List.fromList([]));
+                                        _model.uploadedFileUrl = '';
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ]
+                                  .divide(const SizedBox(width: 8.0))
+                                  .addToStart(const SizedBox(width: 16.0))
+                                  .addToEnd(const SizedBox(width: 16.0)),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 Form(
                   key: _model.formKey,
                   autovalidateMode: AutovalidateMode.disabled,
@@ -179,12 +254,70 @@ class _ComponenteChatWidgetState extends State<ComponenteChatWidget> {
                           fillColor:
                               FlutterFlowTheme.of(context).secondaryBackground,
                           icon: Icon(
-                            Icons.add_outlined,
+                            Icons.add_box,
                             color: FlutterFlowTheme.of(context).secondaryText,
                             size: 24.0,
                           ),
-                          onPressed: () {
-                            print('IconButton pressed ...');
+                          onPressed: () async {
+                            final selectedMedia =
+                                await selectMediaWithSourceBottomSheet(
+                              context: context,
+                              allowPhoto: true,
+                              allowVideo: true,
+                              backgroundColor: FlutterFlowTheme.of(context)
+                                  .secondaryBackground,
+                              textColor:
+                                  FlutterFlowTheme.of(context).primaryText,
+                            );
+                            if (selectedMedia != null &&
+                                selectedMedia.every((m) => validateFileFormat(
+                                    m.storagePath, context))) {
+                              safeSetState(() => _model.isDataUploading = true);
+                              var selectedUploadedFiles = <FFUploadedFile>[];
+
+                              var downloadUrls = <String>[];
+                              try {
+                                selectedUploadedFiles = selectedMedia
+                                    .map((m) => FFUploadedFile(
+                                          name: m.storagePath.split('/').last,
+                                          bytes: m.bytes,
+                                          height: m.dimensions?.height,
+                                          width: m.dimensions?.width,
+                                          blurHash: m.blurHash,
+                                        ))
+                                    .toList();
+
+                                downloadUrls = (await Future.wait(
+                                  selectedMedia.map(
+                                    (m) async => await uploadData(
+                                        m.storagePath, m.bytes),
+                                  ),
+                                ))
+                                    .where((u) => u != null)
+                                    .map((u) => u!)
+                                    .toList();
+                              } finally {
+                                _model.isDataUploading = false;
+                              }
+                              if (selectedUploadedFiles.length ==
+                                      selectedMedia.length &&
+                                  downloadUrls.length == selectedMedia.length) {
+                                safeSetState(() {
+                                  _model.uploadedLocalFile =
+                                      selectedUploadedFiles.first;
+                                  _model.uploadedFileUrl = downloadUrls.first;
+                                });
+                              } else {
+                                safeSetState(() {});
+                                return;
+                              }
+                            }
+
+                            if (_model.uploadedFileUrl != '') {
+                              _model.addToImagenesUploaded(
+                                  _model.uploadedFileUrl);
+                              safeSetState(() {});
+                            }
                           },
                         ),
                         Expanded(
@@ -198,20 +331,85 @@ class _ComponenteChatWidgetState extends State<ComponenteChatWidget> {
                                   child: TextFormField(
                                     controller: _model.textController,
                                     focusNode: _model.textFieldFocusNode,
+                                    onFieldSubmitted: (_) async {
+                                      if (_model.formKey.currentState == null ||
+                                          !_model.formKey.currentState!
+                                              .validate()) {
+                                        return;
+                                      }
+
+                                      var mensajesRecordReference =
+                                          MensajesRecord.collection.doc();
+                                      await mensajesRecordReference
+                                          .set(createMensajesRecordData(
+                                        texto: _model.textController.text,
+                                        imagenes: _model.uploadedFileUrl,
+                                        horaDeEnvio: getCurrentTimestamp,
+                                        usuario: currentUserReference,
+                                        chat: widget.chatref?.reference,
+                                      ));
+                                      _model.nuevChat =
+                                          MensajesRecord.getDocumentFromData(
+                                              createMensajesRecordData(
+                                                texto:
+                                                    _model.textController.text,
+                                                imagenes:
+                                                    _model.uploadedFileUrl,
+                                                horaDeEnvio:
+                                                    getCurrentTimestamp,
+                                                usuario: currentUserReference,
+                                                chat:
+                                                    widget.chatref?.reference,
+                                              ),
+                                              mensajesRecordReference);
+                                      _model.vistopor = [];
+                                      _model
+                                          .addToVistopor(currentUserReference!);
+
+                                      await widget.chatref!.reference.update({
+                                        ...createChatRecordData(
+                                          ultimoMensajeEnviadoPor:
+                                              currentUserReference,
+                                          horaCreacion: getCurrentTimestamp,
+                                          ultimoMensaje:
+                                              _model.textController.text,
+                                        ),
+                                        ...mapToFirestore(
+                                          {
+                                            'Ultimo_Mensaje_vist_por':
+                                                _model.vistopor,
+                                          },
+                                        ),
+                                      });
+                                      safeSetState(() {
+                                        _model.textController?.clear();
+                                      });
+                                      safeSetState(() {
+                                        _model.isDataUploading = false;
+                                        _model.uploadedLocalFile =
+                                            FFUploadedFile(
+                                                bytes: Uint8List.fromList([]));
+                                        _model.uploadedFileUrl = '';
+                                      });
+
+                                      _model.imagenesUploaded = [];
+                                      safeSetState(() {});
+
+                                      safeSetState(() {});
+                                    },
                                     autofocus: true,
                                     textCapitalization:
                                         TextCapitalization.sentences,
-                                    textInputAction: TextInputAction.send,
                                     obscureText: false,
                                     decoration: InputDecoration(
-                                      isDense: true,
+                                      isDense: false,
                                       labelStyle: FlutterFlowTheme.of(context)
                                           .labelMedium
                                           .override(
                                             fontFamily: 'Inter',
                                             letterSpacing: 0.0,
                                           ),
-                                      hintText: 'TextField',
+                                      hintText: 'Empieza a chattear',
                                       hintStyle: FlutterFlowTheme.of(context)
                                           .labelSmall
                                           .override(
@@ -263,9 +461,6 @@ class _ComponenteChatWidgetState extends State<ComponenteChatWidget> {
                                         borderRadius:
                                             BorderRadius.circular(24.0),
                                       ),
-                                      filled: true,
-                                      fillColor: FlutterFlowTheme.of(context)
-                                          .secondaryBackground,
                                       contentPadding:
                                           const EdgeInsetsDirectional.fromSTEB(
                                               16.0, 16.0, 56.0, 16.0),
@@ -278,8 +473,8 @@ class _ComponenteChatWidgetState extends State<ComponenteChatWidget> {
                                         ),
                                     maxLines: 12,
                                     minLines: 1,
-                                    cursorColor:
-                                        FlutterFlowTheme.of(context).primary,
+                                    cursorColor: FlutterFlowTheme.of(context)
+                                        .primaryText,
                                     validator: _model.textControllerValidator
                                         .asValidator(context),
                                   ),
@@ -289,23 +484,69 @@ class _ComponenteChatWidgetState extends State<ComponenteChatWidget> {
                                 alignment: const AlignmentDirectional(1.0, 0.0),
                                 child: Padding(
                                   padding: const EdgeInsetsDirectional.fromSTEB(
-                                      0.0, 4.0, 6.0, 4.0),
+                                      0.0, 4.0, 0.0, 4.0),
                                   child: FlutterFlowIconButton(
-                                    borderColor: FlutterFlowTheme.of(context)
-                                        .secondaryBackground,
                                     borderRadius: 20.0,
-                                    borderWidth: 1.0,
+                                    borderWidth: 12.0,
                                     buttonSize: 40.0,
                                     fillColor:
-                                        FlutterFlowTheme.of(context).accent1,
+                                        FlutterFlowTheme.of(context).tertiary,
                                     icon: Icon(
-                                      Icons.send,
+                                      Icons.send_sharp,
                                       color: FlutterFlowTheme.of(context)
-                                          .alternate,
-                                      size: 20.0,
+                                          .primaryText,
+                                      size: 24.0,
                                     ),
-                                    onPressed: () {
-                                      print('IconButton pressed ...');
+                                    onPressed: () async {
+                                      if (_model.formKey.currentState == null ||
+                                          !_model.formKey.currentState!
+                                              .validate()) {
+                                        return;
+                                      }
+
+                                      await MensajesRecord.collection
+                                          .doc()
+                                          .set(createMensajesRecordData(
+                                            texto: _model.textController.text,
+                                            imagenes: _model.uploadedFileUrl,
+                                            horaDeEnvio: getCurrentTimestamp,
+                                            usuario: currentUserReference,
+                                            chat: widget.chatref?.reference,
+                                          ));
+                                      _model.vistopor = [];
+                                      _model
+                                          .addToVistopor(currentUserReference!);
+                                      safeSetState(() {});
+
+                                      await widget.chatref!.reference.update({
+                                        ...createChatRecordData(
+                                          ultimoMensaje:
+                                              _model.textController.text,
+                                          envioUltimoMensaje:
+                                              getCurrentTimestamp,
+                                          ultimoMensajeEnviadoPor:
+                                              currentUserReference,
+                                        ),
+                                        ...mapToFirestore(
+                                          {
+                                            'Ultimo_Mensaje_vist_por':
+                                                _model.vistopor,
+                                          },
+                                        ),
+                                      });
+                                      safeSetState(() {
+                                        _model.textController?.clear();
+                                      });
+                                      safeSetState(() {
+                                        _model.isDataUploading = false;
+                                        _model.uploadedLocalFile =
+                                            FFUploadedFile(
+                                                bytes: Uint8List.fromList([]));
+                                        _model.uploadedFileUrl = '';
+                                      });
+
+                                      _model.imagenesUploaded = [];
+                                      safeSetState(() {});
                                     },
                                   ),
                                 ),

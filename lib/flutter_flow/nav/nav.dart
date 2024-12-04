@@ -105,16 +105,6 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: 'Listadecursousuario',
-          path: '/listadecursousuario',
-          builder: (context, params) => const ListadecursousuarioWidget(),
-        ),
-        FFRoute(
-          name: 'Listacursosadmingrud',
-          path: '/listacursosadmingrud',
-          builder: (context, params) => const ListacursosadmingrudWidget(),
-        ),
-        FFRoute(
           name: 'Chat_Main',
           path: '/chatMain',
           builder: (context, params) => const ChatMainWidget(),
@@ -144,6 +134,190 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               ParamType.Document,
             ),
           ),
+        ),
+        FFRoute(
+          name: 'Listacursosadmin',
+          path: '/listacursosadmin',
+          builder: (context, params) => const ListacursosadminWidget(),
+        ),
+        FFRoute(
+          name: 'EditarCursoadmin',
+          path: '/editarCursoadmin',
+          builder: (context, params) => EditarCursoadminWidget(
+            cursoRef: params.getParam(
+              'cursoRef',
+              ParamType.DocumentReference,
+              isList: false,
+              collectionNamePath: ['Curso'],
+            ),
+          ),
+        ),
+        FFRoute(
+          name: 'AgregarContenido',
+          path: '/agregarContenido',
+          builder: (context, params) => AgregarContenidoWidget(
+            courseRef: params.getParam(
+              'courseRef',
+              ParamType.DocumentReference,
+              isList: false,
+              collectionNamePath: ['Curso'],
+            ),
+          ),
+        ),
+        FFRoute(
+          name: 'Anuncios',
+          path: '/anuncios',
+          builder: (context, params) => const AnunciosWidget(),
+        ),
+        FFRoute(
+          name: 'NuevoAnuncioParroquial',
+          path: '/nuevoAnuncioParroquial',
+          builder: (context, params) => const NuevoAnuncioParroquialWidget(),
+        ),
+        FFRoute(
+          name: 'CrearCuenta',
+          path: '/crearCuenta',
+          builder: (context, params) => const CrearCuentaWidget(),
+        ),
+        FFRoute(
+          name: 'Grupos',
+          path: '/grupos',
+          builder: (context, params) => const GruposWidget(),
+        ),
+        FFRoute(
+          name: 'CrearGrupo',
+          path: '/crearGrupo',
+          builder: (context, params) => const CrearGrupoWidget(),
+        ),
+        FFRoute(
+          name: 'ContenidodecursoAlumno',
+          path: '/contenidodecursoAlumno',
+          builder: (context, params) => const ContenidodecursoAlumnoWidget(),
+        ),
+        FFRoute(
+          name: 'Usuarios',
+          path: '/usuarios',
+          builder: (context, params) => const UsuariosWidget(),
+        ),
+        FFRoute(
+          name: 'listacursosalumno',
+          path: '/listacursosalumno',
+          builder: (context, params) => const ListacursosalumnoWidget(),
+        ),
+        FFRoute(
+          name: 'DetallesGrupo',
+          path: '/detallesGrupo',
+          builder: (context, params) => DetallesGrupoWidget(
+            nombreGrupoParametro: params.getParam(
+              'nombreGrupoParametro',
+              ParamType.String,
+            ),
+            descripcionParametro: params.getParam(
+              'descripcionParametro',
+              ParamType.String,
+            ),
+            diaParametro: params.getParam(
+              'diaParametro',
+              ParamType.String,
+            ),
+            horaParametro: params.getParam(
+              'horaParametro',
+              ParamType.String,
+            ),
+            miembrosParametro: params.getParam<DocumentReference>(
+              'miembrosParametro',
+              ParamType.DocumentReference,
+              isList: true,
+              collectionNamePath: ['users'],
+            ),
+            urlPhotoGrupoParametro: params.getParam(
+              'urlPhotoGrupoParametro',
+              ParamType.String,
+            ),
+          ),
+        ),
+        FFRoute(
+          name: 'OlvidarContrasena',
+          path: '/olvidarContrasena',
+          builder: (context, params) => const OlvidarContrasenaWidget(),
+        ),
+        FFRoute(
+          name: 'EditProfile',
+          path: '/editProfile',
+          builder: (context, params) => const EditProfileWidget(),
+        ),
+        FFRoute(
+          name: 'EditUser',
+          path: '/editUser',
+          builder: (context, params) => EditUserWidget(
+            imgParam: params.getParam(
+              'imgParam',
+              ParamType.String,
+            ),
+            correoParam: params.getParam(
+              'correoParam',
+              ParamType.String,
+            ),
+            nameParam: params.getParam(
+              'nameParam',
+              ParamType.String,
+            ),
+            telefonoParam: params.getParam(
+              'telefonoParam',
+              ParamType.String,
+            ),
+            seleccionadoParam: params.getParam(
+              'seleccionadoParam',
+              ParamType.DocumentReference,
+              isList: false,
+              collectionNamePath: ['users'],
+            ),
+            rolParam: params.getParam(
+              'rolParam',
+              ParamType.String,
+            ),
+          ),
+        ),
+        FFRoute(
+          name: 'ModuloEnConstruccion',
+          path: '/moduloEnConstruccion',
+          builder: (context, params) => const ModuloEnConstruccionWidget(),
+        ),
+        FFRoute(
+          name: 'CrearCursoadmin',
+          path: '/crearCursoadmin',
+          builder: (context, params) => const CrearCursoadminWidget(),
+        ),
+        FFRoute(
+          name: 'EditarGrupo',
+          path: '/editarGrupo',
+          builder: (context, params) => EditarGrupoWidget(
+            nombreParam: params.getParam(
+              'nombreParam',
+              ParamType.String,
+            ),
+            descripcionParam: params.getParam(
+              'descripcionParam',
+              ParamType.String,
+            ),
+            diaParam: params.getParam(
+              'diaParam',
+              ParamType.String,
+            ),
+            horaParam: params.getParam(
+              'horaParam',
+              ParamType.String,
+            ),
+            urlPhotoGrupoParam: params.getParam(
+              'urlPhotoGrupoParam',
+              ParamType.String,
+            ),
+          ),
+        ),
+        FFRoute(
+          name: 'AgregarMiembrosGrupo',
+          path: '/agregarMiembrosGrupo',
+          builder: (context, params) => const AgregarMiembrosGrupoWidget(),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
       observers: [routeObserver],
